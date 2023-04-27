@@ -11,6 +11,20 @@ router.get("/", async (req, res) => {
     .skip(page * perPage);
   res.json(data);
 });
+router.get("/single/:id",async(req,res)=>{
+  try{
+    const id = req.params.id;
+    const data = await SongModel.findOne({_id:id})
+    res.json(data)
+    
+  }
+  catch(err){
+    console.log(err);
+    res.status(502).json({err:"song not found"})
+  }
+ 
+})
+
 router.post("/",auth ,async (req, res) => {
   const validBody = validataSong(req.body);
   if (validBody.error) {
