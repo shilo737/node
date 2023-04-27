@@ -1,11 +1,12 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
+const { auth } = require("../middlewares/auth");
 const router = express.Router();
 const {
   UserModel,
   validateUser,
   validateLogin,
-  createToken
+  createToken,
 } = require("../model/userModel");
 
 router.get("/", async (req, res) => {
@@ -13,10 +14,18 @@ router.get("/", async (req, res) => {
   res.json(data);
 });
 
-
-
-
-
+router.get("/userInfo", auth, async (req, res) => {
+  try {
+    const user = await UserModel.findOne(
+      { _id: req.tokenData._id },
+      { password: 0 }
+    );
+    res.json(user);
+  } catch (err) {
+    console.log(err);
+    res.status(502).json({ err });
+  }
+});
 
 router.post("/", async (req, res) => {
   const validBody = validateUser(req.body);
@@ -58,8 +67,8 @@ router.post("/login", async (req, res) => {
     if (!passwordValid) {
       return res.status(401).json({ msg: "password wrong!" });
     }
-    const token = createToken(user._id)
-    res.json({token});
+    const token = createToken(user._id);
+    res.json({ token });
   } catch (err) {
     console.log(err);
     res.status(502).json({ err });
