@@ -6,7 +6,8 @@ title:String,
 year:Number,
 singer:String,
 youtube_url:String,
-genre:String
+genre:String,
+user_id:String
 
 },{timestamps:true})
 

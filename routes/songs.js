@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { SongModel, validataSong } = require("../model/songModel");
+const { auth } = require("../middlewares/auth");
 
 router.get("/", async (req, res) => {
   const perPage = 3;
@@ -10,13 +11,14 @@ router.get("/", async (req, res) => {
     .skip(page * perPage);
   res.json(data);
 });
-router.post("/", async (req, res) => {
+router.post("/",auth ,async (req, res) => {
   const validBody = validataSong(req.body);
   if (validBody.error) {
     return res.status(400).json(validBody.error.details);
   }
   try {
     const song = new SongModel(req.body);
+    song.user_id = req.tokenData._id
     await song.save();
     res.json(song);
   } catch (err) {
