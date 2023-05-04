@@ -9,11 +9,29 @@ const { auth } = require("../middlewares/auth");
 router.get("/", async (req, res) => {
   const perPage = 5;
   const page = req.query.page - 1 || 0;
+  const sort = req.query.sort || "_id"
+  const reverse = req.query.reverse == "yes" ? 1 : -1;
   const data = await MotorcycleModel.find({})
     .limit(perPage)
     .skip(page * perPage)
-    .sort({price:1})
+    .sort({[sort]:reverse})
   res.json(data);
+});
+
+router.get("/price",async(req,res)=>{
+  const min = req.query.min || 0
+  const max = req.query.max || Infinity
+try{
+  const data = await MotorcycleModel
+  .find({price:{$gte:min,$lte:max}})
+  res.json(data)
+}
+catch(err){
+  console.log(err);
+  res.status(502).json({err})
+}
+
+
 });
 
 router.get("/single/:id", async (req, res) => {
