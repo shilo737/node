@@ -1,10 +1,11 @@
 const indexR = require("./index")
-const songsR = require("./songs")
 const usersR = require("./users")
-const motorcycleR = require("./motorcycles")
+const tvsR = require("./tvs")
+
+
+
 exports.routesInit = (app) => {
 app.use("/",indexR)
-app.use("/songs",songsR)
 app.use("/users",usersR)
-app.use("/motorcycles",motorcycleR)
+app.use("/tvs",tvsR)
 }
