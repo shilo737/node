@@ -11,7 +11,8 @@ router.get("/", async (req, res) => {
   const page = req.query.page - 1 || 0;
   const data = await MotorcycleModel.find({})
     .limit(perPage)
-    .skip(page * perPage);
+    .skip(page * perPage)
+    .sort({price:1})
   res.json(data);
 });
 
@@ -42,10 +43,10 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",auth,async (req, res) => {
   try {
     const id = req.params.id;
-    const data = await MotorcycleModel.deleteOne({ _id: id });
+    const data = await MotorcycleModel.deleteOne({ _id: id, user_id:req.tokenData._id });
     res.json(data);
   } catch (err) {
     console.log(err);
@@ -53,14 +54,14 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", auth,async (req, res) => {
   const validBody = validateMotorcycle(req.body);
   if (validBody.error) {
     return res.status(401).json(validBody.error.details);
   }
   try {
     const id = req.params.id;
-    const data = await MotorcycleModel.updateOne({ _id: id }, req.body);
+    const data = await MotorcycleModel.updateOne({ _id: id,user_id:req.tokenData._id }, req.body);
     res.json(data);
   } catch (err) {
     console.log(err);

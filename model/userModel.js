@@ -12,11 +12,10 @@ const userSchema = new mongoose.Schema(
 
 exports.UserModel = mongoose.model("users", userSchema);
 
-exports.createToken = (user_id) => {
-  const token = jwt.sign({_id:user_id},"basmahSecret",{expiresIn:"600mins"})
+exports.createToken = (user_id , role) => {
+  const token = jwt.sign({_id:user_id,role},"basmahSecret",{expiresIn:"600mins"})
   return token
 }
-
 
 
 exports.validateUser = (_bodyData) => {
