@@ -4,8 +4,8 @@ const { auth } = require("../middlewares/auth");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-    //קבעתי לו את המספר עמודים שהוא יראה 
-  const perPage = 5;
+    
+  const perPage = req.query.perPage ? Math.min(req.query.perPage,6) : 5;
   const page = req.query.page - 1 || 0;
   const sort = req.query.sort || "_id";
   const reverse = req.query.reverse == "yes" ? 1 : -1;
